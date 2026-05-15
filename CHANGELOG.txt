@@ -1,0 +1,14 @@
+CHANGELOG
+=========
+
+v1.1.00
+-------
+- Added recipient management per campaign.
+- Added batched "Send Now" flow with status updates.
+- Added send run logs in `mailingSendLog`.
+
+v1.0.00
+-------
+- Initial release of the Mailing module.
+- Added campaign management CRUD screens.
+- Added `mailingCampaign` table for campaign metadata and content.
