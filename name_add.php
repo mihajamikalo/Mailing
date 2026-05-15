@@ -20,7 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (!isActionAccessible($guid, $connection2, mailingModulePath('name_add.php'))) {
+$canAccessAdd = isActionAccessible($guid, $connection2, mailingModulePath('name_add.php'))
+    || isActionAccessible($guid, $connection2, mailingModulePath('name_view.php'));
+
+if (!$canAccessAdd) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     $actionURL = $gibbon->session->get('absoluteURL') . '/modules/' . $gibbon->session->get('module') . '/name_addProcess.php';

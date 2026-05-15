@@ -25,13 +25,19 @@ if (!isActionAccessible($guid, $connection2, $modulePath)) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     $newURL = $gibbon->session->get('absoluteURL') . '/index.php?q=' . mailingModulePath('name_add.php');
+    $canOpenAdd = isActionAccessible($guid, $connection2, mailingModulePath('name_add.php'))
+        || isActionAccessible($guid, $connection2, mailingModulePath('name_view.php'));
 
     echo '<h2>' . __('Mailing Campaigns') . '</h2>';
     echo '<p>' . __('Create and manage campaigns for school-wide communications.') . '</p>';
-    echo '<form style="margin: 8px 0 12px 0;" method="get" action="' . mailingH($gibbon->session->get('absoluteURL') . '/index.php') . '">';
-    echo '<input type="hidden" name="q" value="' . mailingH(mailingModulePath('name_add.php')) . '">';
-    echo '<input type="submit" value="' . __('Create Campaign') . '" style="font-weight:bold;">';
-    echo '</form>';
+    if ($canOpenAdd) {
+        echo '<form style="margin: 8px 0 12px 0;" method="get" action="' . mailingH($gibbon->session->get('absoluteURL') . '/index.php') . '">';
+        echo '<input type="hidden" name="q" value="' . mailingH(mailingModulePath('name_add.php')) . '">';
+        echo '<input type="submit" value="' . __('Create Campaign') . '" style="font-weight:bold; padding:6px 12px;">';
+        echo '</form>';
+    } else {
+        echo '<div class="error">' . __('You do not currently have permission to create campaigns.') . '</div>';
+    }
 
     try {
         $sql = "SELECT c.mailingCampaignID, c.name, c.audienceSummary, c.subject, c.senderEmail, c.status, c.totalRecipients, c.scheduledAt, c.updatedAt,
@@ -51,7 +57,10 @@ if (!isActionAccessible($guid, $connection2, $modulePath)) {
     }
 
     if (empty($campaigns)) {
-        echo '<div class="error">' . __('No campaigns found. Start by creating one.') . '</div>';
+        echo '<div class="error">' . __('No campaigns found.') . '</div>';
+        if ($canOpenAdd) {
+            echo '<p><a href="' . mailingH($newURL) . '" style="font-weight:bold; text-decoration: underline;">' . __('Open the Create Campaign form') . '</a></p>';
+        }
         return;
     }
 

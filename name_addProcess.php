@@ -22,7 +22,10 @@ include './moduleFunctions.php';
 
 $URL = $gibbon->session->get('absoluteURL') . '/index.php?q=' . mailingModulePath('name_add.php');
 
-if (!isActionAccessible($guid, $connection2, mailingModulePath('name_add.php'))) {
+$canAccessAdd = isActionAccessible($guid, $connection2, mailingModulePath('name_add.php'))
+    || isActionAccessible($guid, $connection2, mailingModulePath('name_view.php'));
+
+if (!$canAccessAdd) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
